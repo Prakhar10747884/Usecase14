@@ -1,0 +1,32 @@
+---
+- name: Deploy application on Tomcat server
+  hosts: tomcat
+  become: yes
+  tasks:
+    - name: Ensure Tomcat is installed
+      apt:
+        name: tomcat9
+        state: present
+
+    - name: Start Tomcat service
+      service:
+        name: tomcat9
+        state: started
+        enabled: yes
+
+    - name: Deploy application WAR file
+      copy:
+        src: /path/to/your/application.war
+        dest: /var/lib/tomcat9/webapps/my-war.war
+
+    - name: Ensure correct permissions on WAR file
+      file:
+        path: /var/lib/tomcat9/webapps/my-war.war
+        owner: tomcat
+        group: tomcat
+        mode: '0644'
+
+    - name: Restart Tomcat service
+      service:
+        name: tomcat9
+        state: restarted
